@@ -79,6 +79,21 @@ $activeDay = $contentLoader->getActiveDay();
                   </tbody>
                </table>
             </div>
+            <div class="box">
+               <form id="answerFrom">
+                  <label for="answer" class="label">Answer</label>
+                  <div class="field has-addons">
+                     <div class="control">
+                        <input class="input" type="number" placeholder="Answer" id="answer" autocomplete="off">
+                     </div>
+                     <div class="control">
+                        <button type="submit" class="button is-info">
+                           Submit
+                        </button>
+                     </div>
+                  </div>
+               </form>
+            </div>
             <div class="notification is-danger is-hidden" id="error-box">
                <button class="delete" onclick="hideError()"></button>
                <p id="error-msg">Error</p>
@@ -118,9 +133,13 @@ $activeDay = $contentLoader->getActiveDay();
       document.querySelector('#part-2').innerHTML = isNotImplemented(secondResult) ? createButton(2) : secondResult
    }
 
+   function getActiveDay() {
+      return document.querySelector('.tabs li.is-active').dataset.day;
+   }
+
    function runSolution() {
       hideError();
-      const activeDay = document.querySelector('.tabs li.is-active').dataset.day;
+      const activeDay = getActiveDay();
 
       results[activeDay - 1] = ['Loading...', 'Loading...']
       updateResults(activeDay)
@@ -173,6 +192,26 @@ $activeDay = $contentLoader->getActiveDay();
 
             updateResults(day);
          });
+   }
+
+   const answerFrom = document.querySelector('#answerFrom');
+   answerFrom.addEventListener('submit', sendAnswer);
+
+   function sendAnswer(e) {
+      e.preventDefault();
+      const answer = document.querySelector('#answer').value;
+      const activeDay = getActiveDay();
+      const url = `https://adventofcode.com/2022/day/${activeDay}/answer`
+      const data = new FormData();
+      data.append('level', '1');
+      data.append('answer', answer);
+
+      if (confirm(`Do you really want to submit answer: ${answer}`)) {
+         fetch(url, {
+            method: 'POST',
+            body: new URLSearchParams(data)
+         })
+      }
    }
 </script>
 </body>

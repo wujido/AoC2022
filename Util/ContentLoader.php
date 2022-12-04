@@ -40,9 +40,9 @@ class ContentLoader
     public function getAvailableDays(): float
     {
         $now = time();
-        $startDate = strtotime("2022-12-01");
+        $startDate = strtotime("2022-12-01 00:00:00");
         $diff = $now - $startDate;
-        $daysFromStart = round($diff / (60 * 60 * 24));
+        $daysFromStart = round($diff / (60 * 60 * 24)) + 1;
 
         return min([$daysFromStart, 25]);
     }
