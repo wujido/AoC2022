@@ -19,10 +19,10 @@ $activeDay = $contentLoader->getActiveDay();
 </head>
 <body>
 
+<p class="is-size-7">
+    <?= date('Y-m-d H:i:m (e)') ?>
+</p>
 <div class="container p-4">
-   <p>
-       <?= date('Y-m-d H:i:m (e)') ?>
-   </p>
    <div class="box">
       <h1 class="title">Advent of Code 2022</h1>
       <p><em>Advent of Code</em> is an <a href="https://en.wikipedia.org/wiki/Advent_calendar">Advent calendar</a> of small programming puzzles for a variety of skill sets and skill levels that can be
@@ -89,19 +89,14 @@ $activeDay = $contentLoader->getActiveDay();
                </table>
             </div>
             <div class="box">
-               <form id="answerFrom">
-                  <label for="answer" class="label">Answer</label>
-                  <div class="field has-addons">
-                     <div class="control">
-                        <input class="input" type="number" placeholder="Answer" id="answer" autocomplete="off">
-                     </div>
-                     <div class="control">
-                        <button type="submit" class="button is-info">
-                           Submit
-                        </button>
-                     </div>
+               <label for="answer" class="label">Did you submit answer?</label>
+               <div class="field has-addons">
+                  <div class="control">
+                     <button type="submit" class="button is-info" onclick="refreshTask()">
+                        Load next part
+                     </button>
                   </div>
-               </form>
+               </div>
             </div>
             <div class="notification is-danger is-hidden" id="error-box">
                <button class="delete" onclick="hideError()"></button>
@@ -115,6 +110,12 @@ $activeDay = $contentLoader->getActiveDay();
 <script>
    const results = new Array(<?= $days ?>).fill(['Did not', 'run'])
 
+   async function loadTask(section, day) {
+      section.innerHTML = '<p>Loading...</p>';
+      const res = await fetch(`load.php?day=${day}`);
+      section.innerHTML = await res.text();
+   }
+
    async function openDay(day) {
       const activeSection = document.querySelector('.day-description section:not(.is-hidden)');
       activeSection.classList.toggle('is-hidden');
@@ -126,9 +127,7 @@ $activeDay = $contentLoader->getActiveDay();
       newSection.classList.toggle('is-hidden');
 
       if (newSection.innerHTML.trim().length === 0) {
-         newSection.innerHTML = '<p>Loading...</p>';
-         const res = await fetch(`load.php?day=${day}`);
-         newSection.innerHTML = await res.text();
+         await loadTask(newSection, day);
       }
 
       const newTab = document.querySelector(`#tab-${day}`);
@@ -214,24 +213,11 @@ $activeDay = $contentLoader->getActiveDay();
          });
    }
 
-   const answerFrom = document.querySelector('#answerFrom');
-   answerFrom.addEventListener('submit', sendAnswer);
-
-   function sendAnswer(e) {
-      e.preventDefault();
-      const answer = document.querySelector('#answer').value;
+   function refreshTask() {
+      const activeSection = document.querySelector('.day-description section:not(.is-hidden)');
       const activeDay = getActiveDay();
-      const url = `https://adventofcode.com/2022/day/${activeDay}/answer`
-      const data = new FormData();
-      data.append('level', '1');
-      data.append('answer', answer);
 
-      if (confirm(`Do you really want to submit answer: ${answer}`)) {
-         fetch(url, {
-            method: 'POST',
-            body: new URLSearchParams(data)
-         })
-      }
+      loadTask(activeSection, activeDay);
    }
 </script>
 </body>
