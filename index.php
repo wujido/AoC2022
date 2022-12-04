@@ -28,6 +28,10 @@ $activeDay = $contentLoader->getActiveDay();
       <p><em>Advent of Code</em> is an <a href="https://en.wikipedia.org/wiki/Advent_calendar">Advent calendar</a> of small programming puzzles for a variety of skill sets and skill levels that can be
          solved in <a href="https://github.com/search?q=advent+of+code">any</a> programming language you like.</p>
    </div>
+   <div class="notification is-danger is-hidden" id="error-box">
+      <button class="delete" onclick="hideError()"></button>
+      <p id="error-msg">Error</p>
+   </div>
    <div class="columns">
       <div class="column is-three-quarters">
          <div class="box px-0">
@@ -97,10 +101,6 @@ $activeDay = $contentLoader->getActiveDay();
                      </button>
                   </div>
                </div>
-            </div>
-            <div class="notification is-danger is-hidden" id="error-box">
-               <button class="delete" onclick="hideError()"></button>
-               <p id="error-msg">Error</p>
             </div>
          </div>
       </div>

@@ -22,7 +22,19 @@ class App
 
         $day = getVal('day');
         $test = getVal('test');
-        $this->executeDay($day, !is_null($test));
+
+        try {
+            $this->executeDay($day, !is_null($test));
+        } catch (\Throwable $e) {
+            $message = $e->getMessage() . " in <i>" . $e->getFile() . "</i> on line <i>" . $e->getLine() . "</i>";
+            $trace = $e->getTraceAsString();
+            $msg = "<p>
+                      <strong>$message</strong>
+                    </p>
+                    <p>$trace</p>
+                    ";
+            $this->send($msg, 500);
+        }
     }
 
     #[NoReturn] private function executeDay(int $day, bool $test): void
@@ -32,8 +44,8 @@ class App
         $classNotFound = "Class dont exists";
 
         $input = $test
-        ? $this->contentLoader->loadTestInput($day)
-        : $this->contentLoader->loadInput($day);
+            ? $this->contentLoader->loadTestInput($day)
+            : $this->contentLoader->loadInput($day);
 
         if (class_exists($partOneClass)) {
             $partOne = new $partOneClass();
