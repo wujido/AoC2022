@@ -43,6 +43,7 @@ class ContentLoader
             "http" => [
                 "method" => "GET",
                 "header" => "Accept-languange: en-US,en;q=0.9\r\n" .
+                    "Cookie: session=" . getenv("AOC_SESSION") . "\r\n"
             ]
         ]);
     }
