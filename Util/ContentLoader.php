@@ -53,7 +53,7 @@ class ContentLoader
         $now = time();
         $startDate = strtotime("2022-12-01 00:00:00");
         $diff = $now - $startDate;
-        $daysFromStart = round($diff / (60 * 60 * 24)) + 1;
+        $daysFromStart = ceil($diff / (60 * 60 * 24));
 
         return min([$daysFromStart, 25]);
     }
