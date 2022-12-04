@@ -15,7 +15,7 @@ class ContentLoader
     public function loadInput(int $day): array
     {
         $rawData = file_get_contents($this->constructInputUrl($day), false, $this->constructContext());
-        return explode("\n", $rawData);
+        return $this->createArrayFromInput($rawData);
     }
 
     public function loadTestInput(int $day): array
@@ -24,7 +24,7 @@ class ContentLoader
         $pattern = "#<pre><code>(.*)</code></pre>#sU";
         preg_match($pattern, $data, $matches);
 
-        return explode("\n", $matches[1]);
+        return $this->createArrayFromInput($matches[1]);
     }
 
     private function constructTaskUrl(int $day): string
@@ -64,5 +64,12 @@ class ContentLoader
             return 1;
 
         return date('d');
+    }
+
+    private function createArrayFromInput($input): array
+    {
+        $input = explode("\n", $input);
+        array_pop($input);
+        return $input;
     }
 }
