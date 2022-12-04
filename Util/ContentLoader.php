@@ -1,4 +1,5 @@
 <?php
+
 namespace Util;
 
 class ContentLoader
@@ -15,6 +16,15 @@ class ContentLoader
     {
         $rawData = file_get_contents($this->constructInputUrl($day), false, $this->constructContext());
         return explode("\n", $rawData);
+    }
+
+    public function loadTestInput(int $day): array
+    {
+        $data = $this->loadTask($day);
+        $pattern = "#<pre><code>(.*)</code></pre>#sU";
+        preg_match($pattern, $data, $matches);
+
+        return explode("\n", $matches[1]);
     }
 
     private function constructTaskUrl(int $day): string
@@ -47,7 +57,8 @@ class ContentLoader
         return min([$daysFromStart, 25]);
     }
 
-    public function getActiveDay(): float {
+    public function getActiveDay(): float
+    {
         if (time() > strtotime('2022-12-25'))
             return 1;
 

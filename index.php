@@ -57,8 +57,13 @@ $activeDay = $contentLoader->getActiveDay();
       <div class="column is-one-quarter">
          <div style="position: sticky; top: 1rem">
             <div class="box p-0">
-               <div class="py-4 is-flex is-justify-content-center">
-                  <button class="button is-small is-success" onclick="runSolution()">Run Solution</button>
+               <div class="py-4 is-flex is-justify-content-center field is-grouped">
+                  <p class="control">
+                     <button class="button is-small is-success" onclick="runSolution()">Run Solution</button>
+                  </p>
+                  <p class="control">
+                     <button class="button is-small is-warning" onclick="runSolution(true)">Run Test</button>
+                  </p>
                </div>
                <table class="table is-fullwidth">
                   <thead>
@@ -137,14 +142,19 @@ $activeDay = $contentLoader->getActiveDay();
       return document.querySelector('.tabs li.is-active').dataset.day;
    }
 
-   function runSolution() {
+   function runSolution(test = false) {
       hideError();
       const activeDay = getActiveDay();
 
       results[activeDay - 1] = ['Loading...', 'Loading...']
       updateResults(activeDay)
 
-      fetch(`run.php?day=${activeDay}`)
+      let url = `run.php?day=${activeDay}`;
+
+      if (test)
+         url += '&test=1';
+
+      fetch(url)
          .then(async (r) => {
             try {
                return await r.json()

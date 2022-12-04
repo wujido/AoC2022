@@ -21,18 +21,23 @@ class App
         }
 
         $day = getVal('day');
-        $this->executeDay($day);
+        $test = getVal('test');
+        $this->executeDay($day, !is_null($test));
     }
 
-    #[NoReturn] private function executeDay(int $day): void
+    #[NoReturn] private function executeDay(int $day, bool $test): void
     {
         $partOneClass = constructDayClassFullName($day, 1);
 
         $classNotFound = "Class dont exists";
 
+        $input = $test
+        ? $this->contentLoader->loadTestInput($day)
+        : $this->contentLoader->loadInput($day);
+
         if (class_exists($partOneClass)) {
             $partOne = new $partOneClass();
-            $partOneRes = $partOne->run($this->contentLoader->loadInput($day));
+            $partOneRes = $partOne->run($input);
         } else {
             $partOneRes = $classNotFound;
         }
@@ -40,7 +45,7 @@ class App
         $partTwoClass = constructDayClassFullName($day, 2);
         if (class_exists($partTwoClass)) {
             $partTwo = new $partTwoClass();
-            $partTwoRes = $partTwo->run($this->contentLoader->loadInput($day));
+            $partTwoRes = $partTwo->run($input);
         } else {
             $partTwoRes = $classNotFound;
         }
