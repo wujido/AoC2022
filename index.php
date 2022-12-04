@@ -48,7 +48,11 @@ $activeDay = $contentLoader->getActiveDay();
             <div class="day-description px-4">
                 <?php for ($i = 1; $i <= $days; $i++) { ?>
                    <section class="content <?php if ($i != $activeDay) { ?>is-hidden<?php } ?>" id="day-<?= $i ?>">
-                       <?= $contentLoader->loadTask($i); ?>
+                       <?php
+                       if ($i == $activeDay) {
+                           echo $contentLoader->loadTask($i);
+                       }
+                       ?>
                    </section>
                 <?php } ?>
             </div>
@@ -111,7 +115,7 @@ $activeDay = $contentLoader->getActiveDay();
 <script>
    const results = new Array(<?= $days ?>).fill(['Did not', 'run'])
 
-   function openDay(day) {
+   async function openDay(day) {
       const activeSection = document.querySelector('.day-description section:not(.is-hidden)');
       activeSection.classList.toggle('is-hidden');
 
@@ -120,6 +124,12 @@ $activeDay = $contentLoader->getActiveDay();
 
       const newSection = document.querySelector(`#day-${day}`);
       newSection.classList.toggle('is-hidden');
+
+      if (newSection.innerHTML.trim().length === 0) {
+         newSection.innerHTML = '<p>Loading...</p>';
+         const res = await fetch(`load.php?day=${day}`);
+         newSection.innerHTML = await res.text();
+      }
 
       const newTab = document.querySelector(`#tab-${day}`);
       newTab.classList.toggle('is-active');
