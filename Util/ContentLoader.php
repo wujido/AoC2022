@@ -7,9 +7,9 @@ class ContentLoader
     public function loadTask(int $day): string
     {
         $rawData = file_get_contents($this->constructTaskUrl($day), false, $this->constructContext());
-        $pattern = "#<article class=\"day-desc\">.*</article>#s";
+        $pattern = "#<main>.*</main>#s";
         preg_match($pattern, $rawData, $matches);
-        return $matches[0];
+        return $this->deleteForm($matches[0]);
     }
 
     public function loadInput(int $day): array
@@ -71,5 +71,11 @@ class ContentLoader
         $input = explode("\n", $input);
         array_pop($input);
         return $input;
+    }
+
+    private function deleteForm(string $content): array|string|null
+    {
+        $pattern = "#<form.*</form>#s";
+        return preg_replace($pattern, '', $content);
     }
 }
