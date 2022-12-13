@@ -52,3 +52,20 @@ function sizeOfInterval(array $interval)
 {
     return $interval[1] - $interval[0] + 1;
 }
+
+function everyNthChar(string $str, int $nth, int $offset = 0): array
+{
+    $count = mb_strlen($str);
+    if ($count - $offset < $offset)
+        return [];
+
+    $range = range($offset, $count - $offset, $nth);
+    return array_reduce($range, function ($res, $i) use ($str) {
+       return [...$res, $str[$i]];
+    }, []);
+}
+
+function transpose(array $array): array
+{
+    return array_map(null, ...$array);
+}
