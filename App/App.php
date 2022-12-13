@@ -39,16 +39,17 @@ class App
 
     #[NoReturn] private function executeDay(int $day, bool $test): void
     {
-        $partOneClass = constructDayClassFullName($day, 1);
-
         $classNotFound = "Class dont exists";
+        $partOneClass = constructDayClassFullName($day, 1);
+        if (class_exists($partOneClass)) {
+            $partOne = new $partOneClass();
+        }
 
         $input = $test
             ? $this->contentLoader->loadTestInput($day)
             : $this->contentLoader->loadInput($day);
 
-        if (class_exists($partOneClass)) {
-            $partOne = new $partOneClass();
+        if (isset($partOne)) {
             $partOneRes = $partOne->run($input);
         } else {
             $partOneRes = $classNotFound;

@@ -4,6 +4,8 @@ namespace Util;
 
 class ContentLoader
 {
+    static int $TEST_CODE_BLOCK_NUMBER = 0;
+
     public function loadTask(int $day): string
     {
         $rawData = file_get_contents($this->constructTaskUrl($day), false, $this->constructContext());
@@ -22,9 +24,9 @@ class ContentLoader
     {
         $data = $this->loadTask($day);
         $pattern = "#<pre><code>(.*)</code></pre>#sU";
-        preg_match($pattern, $data, $matches);
+        preg_match_all($pattern, $data, $matches);
 
-        return $this->createArrayFromInput($matches[1]);
+        return $this->createArrayFromInput($matches[1][self::$TEST_CODE_BLOCK_NUMBER]);
     }
 
     private function constructTaskUrl(int $day): string
