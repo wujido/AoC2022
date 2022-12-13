@@ -15,7 +15,7 @@ class ContentLoader
     public function loadInput(int $day): array
     {
         $rawData = file_get_contents($this->constructInputUrl($day), false, $this->constructContext());
-        return $this->createArrayFromInput($rawData);
+        return $this->createFinalInput($rawData);
     }
 
     public function loadTestInput(int $day): array
@@ -24,7 +24,7 @@ class ContentLoader
         $pattern = "#<pre><code>(.*)</code></pre>#sU";
         preg_match($pattern, $data, $matches);
 
-        return $this->createArrayFromInput($matches[1]);
+        return $this->createFinalInput($matches[1]);
     }
 
     private function constructTaskUrl(int $day): string
@@ -66,11 +66,14 @@ class ContentLoader
         return date('d');
     }
 
-    private function createArrayFromInput($input): array
+    private function createFinalInput($input): array|string
     {
         $input = explode("\n", $input);
-        array_pop($input);
-        return $input;
+        if (count($input) > 1)
+            array_pop($input);
+
+        return count($input) === 1 ? $input[0] : $input;
+
     }
 
     private function deleteForm(string $content): array|string|null

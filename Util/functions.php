@@ -61,11 +61,20 @@ function everyNthChar(string $str, int $nth, int $offset = 0): array
 
     $range = range($offset, $count - $offset, $nth);
     return array_reduce($range, function ($res, $i) use ($str) {
-       return [...$res, $str[$i]];
+        return [...$res, $str[$i]];
     }, []);
 }
 
 function transpose(array $array): array
 {
     return array_map(null, ...$array);
+}
+
+function findIndex($array, $callback): int|string
+{
+    foreach ($array as $k => $v)
+        if ($callback($v, $k, $array))
+            return $k;
+
+    return -1;
 }
