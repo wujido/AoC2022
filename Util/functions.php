@@ -78,3 +78,10 @@ function findIndex($array, $callback): int|string
 
     return -1;
 }
+
+function reduce(iterable $iterator, callable $callback, $initial = null) {
+    foreach ($iterator as $item) {
+        $initial = $callback($initial, $item);
+    }
+   return $initial;
+}
