@@ -9,6 +9,12 @@ class ContentLoader
     public function loadTask(int $day): string
     {
         $rawData = file_get_contents($this->constructTaskUrl($day), false, $this->constructContext());
+
+        if (!$rawData) {
+            $a = file_get_contents("google.com");
+            return error_get_last()['message'];
+        }
+
         $pattern = "#<main>.*</main>#s";
         preg_match($pattern, $rawData, $matches);
         return $this->deleteForm($matches[0]);
