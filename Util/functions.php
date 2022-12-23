@@ -1,5 +1,7 @@
 <?php
 
+use Util\ExecutionTime;
+
 function getVal($value, $array = null, $default = null)
 {
     if ($array !== null) {
@@ -79,9 +81,22 @@ function findIndex($array, $callback): int|string
     return -1;
 }
 
-function reduce(iterable $iterator, callable $callback, $initial = null) {
+function reduce(iterable $iterator, callable $callback, $initial = null)
+{
     foreach ($iterator as $item) {
         $initial = $callback($initial, $item);
     }
-   return $initial;
+    return $initial;
+}
+
+function measureExecTime(callable $func, ...$args): array
+{
+    $executionTime = new ExecutionTime();
+    $executionTime->start();
+    $result = call_user_func($func, ...$args);
+    $executionTime->end();
+    return [
+        'result' => $result,
+        'execTime' => "$executionTime"
+    ];
 }

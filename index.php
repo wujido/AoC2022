@@ -77,17 +77,20 @@ $activeDay = $contentLoader->getActiveDay();
                   <thead>
                   <tr>
                      <th>Part</th>
-                     <th style="width: 100%">Result</th>
+                     <th>Result</th>
+                     <th>Time</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr>
                      <td class="has-text-weight-bold">1.</td>
                      <td id="part-1">Did not</td>
+                     <td id="part-1-time" style="font-size: 10px"></td>
                   </tr>
                   <tr>
                      <td class="has-text-weight-bold">2.</td>
                      <td id="part-2">run</td>
+                     <td id="part-2-time" style="font-size: 10px"></td>
                   </tr>
                   </tbody>
                </table>
@@ -108,7 +111,10 @@ $activeDay = $contentLoader->getActiveDay();
 </div>
 
 <script>
-   const results = new Array(<?= $days ?>).fill(['Did not', 'run'])
+   const results = new Array(<?= $days ?>).fill([
+      {'result': 'Did not', 'execTime': ''},
+      {'result': 'run', 'execTime': ''}
+   ])
 
    async function loadTask(section, day) {
       section.innerHTML = '<p>Loading...</p>';
@@ -140,11 +146,14 @@ $activeDay = $contentLoader->getActiveDay();
       const createButton = part => `<button class="button is-small is-info" onclick="createClass(${day}, ${part})">Create Class</button>`;
       const isNotImplemented = res => res === "Class dont exists";
 
-      const firstResult = results[day - 1][0];
-      const secondResult = results[day - 1][1];
+      const firstResult = results[day - 1][0]['result'];
+      const secondResult = results[day - 1][1]['result'];
 
       document.querySelector('#part-1').innerHTML = isNotImplemented(firstResult) ? createButton(1) : firstResult
       document.querySelector('#part-2').innerHTML = isNotImplemented(secondResult) ? createButton(2) : secondResult
+
+      document.querySelector('#part-1-time').innerHTML = results[day - 1][0]['execTime'];
+      document.querySelector('#part-2-time').innerHTML = results[day - 1][1]['execTime'];
    }
 
    function getActiveDay() {
@@ -155,7 +164,10 @@ $activeDay = $contentLoader->getActiveDay();
       hideError();
       const activeDay = getActiveDay();
 
-      results[activeDay - 1] = ['Loading...', 'Loading...']
+      results[activeDay - 1] = [
+         {'result': 'Loading...', 'execTime': ''},
+         {'result': 'Loading...', 'execTime': ''}
+      ];
       updateResults(activeDay)
 
       let url = `run.php?day=${activeDay}`;
@@ -168,14 +180,14 @@ $activeDay = $contentLoader->getActiveDay();
             try {
                return await r.json()
             } catch (e) {
-               showError(r);
-               return ["Error", "Occurred"];
+               showError(e);
+               return [{'result': "Error", 'execTime': ''}, {'result': "Occurred", 'execTime': ''}];
             }
          })
          .then(res => {
             if (!Array.isArray(res)) {
                showError(res);
-               res = ["Error", "Occurred"];
+               res = [{'result': "Error", 'execTime': ''}, {'result': "Occurred", 'execTime': ''}];
             }
 
             results[activeDay - 1] = res
@@ -205,7 +217,7 @@ $activeDay = $contentLoader->getActiveDay();
             const res = await r.text();
 
 
-            results[day - 1][part - 1] = res === '1'
+            results[day - 1][part - 1]['result'] = res === '1'
                ? 'Not Implemented'
                : 'Creation failed';
 

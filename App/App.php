@@ -28,11 +28,12 @@ class App
         } catch (\Throwable $e) {
             $message = $e->getMessage() . " in <i>" . $e->getFile() . "</i> on line <i>" . $e->getLine() . "</i>";
             $trace = $e->getTraceAsString();
-            $msg = "<p>
+            $msg = <<<EOD
+                    <p>
                       <strong>$message</strong>
                     </p>
                     <p>$trace</p>
-                    ";
+                    EOD;
             $this->send($msg, 500);
         }
     }
@@ -49,24 +50,22 @@ class App
             ? $this->contentLoader->loadTestInput($day)
             : $this->contentLoader->loadInput($day);
 
+        $res = [
+            ['result' => $classNotFound, 'execTime' => ''],
+            ['result' => $classNotFound, 'execTime' => ''],
+        ];
+
         if (isset($partOne)) {
-            $partOneRes = $partOne->run($input);
-        } else {
-            $partOneRes = $classNotFound;
+            $res[0] = measureExecTime([$partOne, 'run'], $input);
         }
 
         $partTwoClass = constructDayClassFullName($day, 2);
         if (class_exists($partTwoClass)) {
             $partTwo = new $partTwoClass();
-            $partTwoRes = $partTwo->run($input);
-        } else {
-            $partTwoRes = $classNotFound;
+            $res[1] = measureExecTime([$partTwo, 'run'], $input);
         }
 
-        $this->send([
-            $partOneRes,
-            $partTwoRes
-        ]);
+        $this->send($res);
     }
 
 
