@@ -14,6 +14,7 @@ RUN adduser -G permissionToWrite --system -D -s /bin/sh -u ${UID} permissionToWr
 RUN sed -i "s/user = www-data/user = permissionToWrite/g" /usr/local/etc/php-fpm.d/www.conf
 RUN sed -i "s/group = www-data/group = permissionToWrite/g" /usr/local/etc/php-fpm.d/www.conf
 
-RUN apk add --no-cache $PHPIZE_DEPS \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug
+RUN apk add --update linux-headers \
+    && apk add --no-cache $PHPIZE_DEPS \
+    && pecl install -o xdebug ds \
+    && docker-php-ext-enable xdebug ds
