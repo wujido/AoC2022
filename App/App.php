@@ -4,6 +4,7 @@ namespace App;
 
 use JetBrains\PhpStorm\NoReturn;
 use Util\ContentLoader;
+use Util\ExecutionTime;
 
 class App
 {
@@ -56,13 +57,13 @@ class App
         ];
 
         if (isset($partOne)) {
-            $res[0] = measureExecTime([$partOne, 'run'], $input);
+            $res[0] = ExecutionTime::measure([$partOne, 'run'], $input);
         }
 
         $partTwoClass = constructDayClassFullName($day, 2);
         if (class_exists($partTwoClass)) {
             $partTwo = new $partTwoClass();
-            $res[1] = measureExecTime([$partTwo, 'run'], $input);
+            $res[1] = ExecutionTime::measure([$partTwo, 'run'], $input);
         }
 
         $this->send($res);

@@ -88,15 +88,3 @@ function reduce(iterable $iterator, callable $callback, $initial = null)
     }
     return $initial;
 }
-
-function measureExecTime(callable $func, ...$args): array
-{
-    $executionTime = new ExecutionTime();
-    $executionTime->start();
-    $result = call_user_func($func, ...$args);
-    $executionTime->end();
-    return [
-        'result' => $result,
-        'execTime' => "$executionTime"
-    ];
-}
