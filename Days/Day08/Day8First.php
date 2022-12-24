@@ -2,56 +2,70 @@
 
 namespace Days\Day08;
 
+use Util\ExecutionTime;
+
 class Day8First implements \Days\Day
 {
     public function run(array $input): int|string
     {
-        $field = array_map(fn($i) => mb_str_split($i), $input);
+        $field = $this->splitInputToField($input);
 
         $visible = $this->initVisible($field);
-        $visible = $this->searchField($field, $visible);
+        array_walk($field, $this->searchField($visible), $field);
 
-        return $this->countVisible($visible);
+        $count = 0;
+        array_walk_recursive($visible, $this->accumulateArray($count));
+
+        return $count;
     }
 
-    private function searchLine($visible, $line)
+    protected function splitInputToField(array $input): array
     {
-        $highestTree = -1;
-        array_walk($line, function ($tree, $i) use (&$visible, &$highestTree) {
-            if ($tree > $highestTree)
-                $visible[strval($i)] = $highestTree = $tree;
-        });
-        return $visible;
+        return array_map(fn($i) => mb_str_split($i), $input);
     }
 
-    public function searchLines(array $lines, array $visible): array
+    protected function searchField(array &$visible): \Closure
     {
-        array_walk($lines, function ($line, $i) use (&$visible) {
-            $visible[strval($i)] = $this->searchLine($visible[$i], $line);
-            $visible[strval($i)] = array_reverse($this->searchLine(array_reverse($visible[$i]), array_reverse($line)));
-        });
-        return array($lines, $visible);
+        return function ($line, $y, $field) use (&$visible) {
+            array_walk($line, $this->searchLine($visible, $y), $field);
+        };
     }
 
-    public function initVisible(array $lines): array
+    protected function searchLine(array &$visible, $y): \Closure
     {
-        return array_fill(0, count($lines), array_fill(0, count($lines[0]), null));
+        return function ($tree, $x, $field) use (&$visible, $y) {
+            foreach (Direction::cases() as $direction) {
+                $pos = new Vector($x, $y);
+
+                do {
+                    $pos = $pos->move($direction);
+                } while (
+                    $pos->isSelfInField($field) &&
+                    $pos->getSelfInField($field) < $tree
+                );
+
+                if (!$pos->isSelfInField($field)) {
+                    $visible[$y][$x] = $tree;
+                    break;
+                }
+            }
+        };
     }
 
-    public function searchField(array $lines, array $visible): array
+    protected function accumulateArray(int &$acc): \Closure
     {
-        list($lines, $visible) = $this->searchLines($lines, $visible);
-        list($lines, $visible) = $this->searchLines(transpose($lines), transpose($visible));
-        return $visible;
+        return function ($i) use (&$acc) {
+            $acc += is_null($i) ? 0 : 1;
+        };
     }
 
-    public function countVisible(array $visible): int
+    protected function initVisible(array $field): array
     {
-        $visibleCount = 0;
-        array_walk_recursive($visible, function ($t) use (&$visibleCount) {
-            if (!is_null($t)) $visibleCount++;
-        });
+        return array_fill(0, count($field), array_fill(0, count($field[0]), $this->getDefaultVisible()));
+    }
 
-        return $visibleCount;
+    protected function getDefaultVisible(): ?int
+    {
+        return null;
     }
 }
