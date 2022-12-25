@@ -35,6 +35,20 @@ class Vector
         return !is_null($this->getSelfInField($field));
     }
 
+    public function distance(Vector $vector): float
+    {
+        $a = $vector->getX() - $this->x;
+        $b = $vector->getY() - $this->y;
+        return sqrt($a * $a + $b * $b);
+    }
+
+    public function gridDirection(Vector $vector): Vector
+    {
+        $x = round(($vector->getX() - $this->x) / 2);
+        $y = round(($vector->getY() - $this->y) / 2);
+        return new Vector($x, $y);
+    }
+
     public function getX(): float
     {
         return $this->x;
@@ -43,5 +57,10 @@ class Vector
     public function getY(): float
     {
         return $this->y;
+    }
+
+    public function __toString()
+    {
+       return "($this->x, $this->y)" ;
     }
 }
