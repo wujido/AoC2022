@@ -84,12 +84,12 @@ $activeDay = $contentLoader->getActiveDay();
                   <tbody>
                   <tr>
                      <td class="has-text-weight-bold">1.</td>
-                     <td id="part-1">Did not</td>
+                     <td id="part-1" style="font-family: monospace">Did not</td>
                      <td id="part-1-time" style="font-size: 10px"></td>
                   </tr>
                   <tr>
                      <td class="has-text-weight-bold">2.</td>
-                     <td id="part-2">run</td>
+                     <td id="part-2" style="font-family: monospace">run</td>
                      <td id="part-2-time" style="font-size: 10px"></td>
                   </tr>
                   </tbody>
