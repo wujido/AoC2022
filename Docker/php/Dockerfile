@@ -15,6 +15,8 @@ RUN sed -i "s/user = www-data/user = permissionToWrite/g" /usr/local/etc/php-fpm
 RUN sed -i "s/group = www-data/group = permissionToWrite/g" /usr/local/etc/php-fpm.d/www.conf
 
 RUN apk add --update linux-headers \
-    && apk add --no-cache $PHPIZE_DEPS \
+    && apk add --no-cache $PHPIZE_DEPS composer \
     && pecl install -o xdebug ds \
     && docker-php-ext-enable xdebug ds
+
+RUN #composer install

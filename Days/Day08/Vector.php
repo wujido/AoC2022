@@ -30,6 +30,11 @@ class Vector
         return $field[$this->y][$this->x] ?? $default;
     }
 
+    public function setSelfInField(array &$field, $value): void
+    {
+        $field[$this->y][$this->x] = $value;
+    }
+
     public function isSelfInField(array $field): bool
     {
         return !is_null($this->getSelfInField($field));
@@ -61,6 +66,6 @@ class Vector
 
     public function __toString()
     {
-       return "($this->x, $this->y)" ;
+        return "($this->x, $this->y)";
     }
 }

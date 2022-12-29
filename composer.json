@@ -1,0 +1,13 @@
+{
+    "name": "wujido/asventofcode",
+    "description": "Advent of Code 2022 solutions",
+    "type": "project",
+    "require": {
+        "langleyfoxall/math_eval": "^2.0"
+    },
+    "authors": [
+        {
+            "name": "Václav Hrouda"
+        }
+    ]
+}
